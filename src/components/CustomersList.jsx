@@ -1,5 +1,13 @@
+import { useLoaderData, useNavigate } from "react-router-dom";
+
 export const CustomersList = ({ customers }) => {
-    console.log(customers);
+    const navigate = useNavigate();
+
+    const onDetailsClick = (customer) => {
+        navigate(`/customer/${customer._id}`);
+    };
+
+    customers = useLoaderData();
 
     return (
         <div className="container">
@@ -19,7 +27,12 @@ export const CustomersList = ({ customers }) => {
                             <br />
                         </address>
                         <p className="card-text">NIP: {customer.nip}</p>
-                        <button className="btn btn-primary">Szczegóły</button>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => onDetailsClick(customer)}
+                        >
+                            Szczegóły
+                        </button>
                     </div>
                 </div>
             ))}
