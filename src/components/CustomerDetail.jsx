@@ -1,21 +1,23 @@
-import { useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 
-export const CustomerDetail = ({ customers }) => {
-    const { id } = useParams();
-    const selectedUser = customers.find((user) => user.id === Number(id));
-    console.log(selectedUser);
+export const CustomerDetail = () => {
+    const customer = useLoaderData();
+    const actions = customer.actions;
     return (
-        <div className="customer">
+        <div className="container">
             <div className="mb-5 card">
                 <div className="card-body">
-                    <div className="card-title h5"></div>
+                    <div className="card-title h5">{customer.name}</div>
                     <strong>Adres</strong>
                     <address>
-                        <div>Orszańska</div>
-                        <div>30-698</div>
-                        <div>Kraków</div>
+                        {customer.address.street}
+                        <br />
+                        {customer.address.zipCode}
+                        <br />
+                        {customer.address.city}
+                        <br />
                     </address>
-                    <p className="card-text">NIP: 6793097580</p>
+                    <p className="card-text">NIP: {customer.nip}</p>
                 </div>
             </div>
             <h2>Akcje</h2>
@@ -30,24 +32,28 @@ export const CustomerDetail = ({ customers }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* {
-            {actions.map((action, index) => (
-              <tr key={index}>
-                <td>{index + 1}.</td>
-                <td>{akcja.opis}</td>
-                <td>{akcja.rodzaj}</td>
-                <td>{akcja.data}</td>
-                <td>
-                  <Button type="button" className="btn btn-primary">
-                    Usuń
-                  </Button>
-                  <Button type="button" className="btn btn-primary">
-                    Edytuj
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          } */}
+                    {actions.map((action, index) => (
+                        <tr key={index}>
+                            <td>{index + 1}.</td>
+                            <td>{action.description}</td>
+                            <td>{action.type}</td>
+                            <td>{action.date}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                >
+                                    Usuń
+                                </button>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                >
+                                    Edytuj
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                 </tbody>
             </table>
             <button type="button" className="btn btn-primary">

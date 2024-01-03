@@ -19,7 +19,6 @@ export const AddCustomerForm = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Tu możesz obsługiwać wysłane dane
         console.log(formData);
     };
 
@@ -39,7 +38,6 @@ export const AddCustomerForm = () => {
                     onChange={handleChange}
                 />
             </div>
-            {/* ... Pozostałe pola wejściowe analogicznie ... */}
             <div className="mb-3">
                 <button type="submit" className="btn btn-primary">
                     Dodaj

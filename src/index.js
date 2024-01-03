@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CustomersList } from "./components/CustomersList";
+import { CustomerDetail } from "./components/CustomerDetail";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +17,15 @@ const router = createBrowserRouter([
                 element: <CustomersList />,
                 loader: () => {
                     return fetch("http://localhost:4000/crm/customers");
+                },
+            },
+            {
+                path: "/customers/:id",
+                element: <CustomerDetail />,
+                loader: ({ params }) => {
+                    return fetch(
+                        `http://localhost:4000/crm/customers/${params.id}`
+                    );
                 },
             },
         ],
