@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, useLoaderData } from "react-router-dom";
+import { Form, redirect, useLoaderData } from "react-router-dom";
 
 export async function updateCustomer({ request, params }) {
     const data = await request.formData();
@@ -19,7 +19,11 @@ export async function updateCustomer({ request, params }) {
         headers: {
             "Content-type": "application/json",
         },
-    });
+    })
+        .then((response) => response.json())
+        .then((customer) => {
+            return redirect(`/customers/${customer._id}`);
+        });
 }
 
 export const CustomerEdit = () => {
