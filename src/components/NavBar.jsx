@@ -1,17 +1,19 @@
+import { Link } from "react-router-dom";
+
 export const NavBar = () => {
     return (
-        <nav class="navbar navbar-expand navbar-light">
-            <div class="container">
-                <a class="navbar-brand" href="/crm-front/">
-                    CRM
-                </a>
-                <div class="me-auto navbar-nav">
-                    <a class="nav-link" href="/crm-front/add-customer">
+        <nav className="navbar navbar-expand navbar-light">
+            <div>
+                <div className="me-auto navbar-nav">
+                    <Link className="navbar-brand" to={"/customers"}>
+                        CRM
+                    </Link>
+                    <Link className="nav-link" to={"/add-customer"}>
                         Dodaj klienta
-                    </a>
-                    <a class="nav-link" href="/crm-front/">
+                    </Link>
+                    <Link className="nav-link" to={"/logout"}>
                         Logout
-                    </a>
+                    </Link>
                 </div>
             </div>
         </nav>

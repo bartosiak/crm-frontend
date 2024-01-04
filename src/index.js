@@ -6,6 +6,8 @@ import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CustomersList } from "./components/CustomersList";
 import { CustomerDetail } from "./components/CustomerDetail";
+import { AddCustomerForm } from "./components/AddCustomerForm";
+import { createNewCustomer } from "./components/AddCustomerForm";
 
 const router = createBrowserRouter([
     {
@@ -16,7 +18,7 @@ const router = createBrowserRouter([
                 path: "/customers",
                 element: <CustomersList />,
                 loader: () => {
-                    return fetch("http://localhost:4000/crm/customers");
+                    return fetch("http://localhost:4000/customers");
                 },
             },
             {
@@ -24,9 +26,14 @@ const router = createBrowserRouter([
                 element: <CustomerDetail />,
                 loader: ({ params }) => {
                     return fetch(
-                        `http://localhost:4000/crm/customers/${params.id}`
+                        `http://localhost:4000/customers/${params.id}`
                     );
                 },
+            },
+            {
+                path: "/add-customer",
+                action: createNewCustomer,
+                element: <AddCustomerForm />,
             },
         ],
     },
