@@ -8,6 +8,7 @@ import { CustomersList } from "./components/CustomersList";
 import { CustomerDetail } from "./components/CustomerDetail";
 import { AddCustomerForm } from "./components/AddCustomerForm";
 import { createNewCustomer } from "./components/AddCustomerForm";
+import { CustomerEdit, updateCustomer } from "./components/CustomerEdit";
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,16 @@ const router = createBrowserRouter([
                 path: "/add-customer",
                 action: createNewCustomer,
                 element: <AddCustomerForm />,
+            },
+            {
+                path: "/edit-customer/:id",
+                element: <CustomerEdit />,
+                action: updateCustomer,
+                loader: ({ params }) => {
+                    return fetch(
+                        `http://localhost:4000/customers/${params.id}`
+                    );
+                },
             },
         ],
     },
