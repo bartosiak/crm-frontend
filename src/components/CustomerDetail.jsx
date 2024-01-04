@@ -4,7 +4,7 @@ export const CustomerDetail = () => {
     const customer = useLoaderData();
     const actions = customer.actions;
     return (
-        <div className="container">
+        <div>
             <div className="mb-5 card">
                 <div className="card-body">
                     <div className="card-title h5">{customer.name}</div>

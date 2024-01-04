@@ -1,16 +1,16 @@
-import { useLoaderData, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 
 export const CustomersList = ({ customers }) => {
     const navigate = useNavigate();
 
     const onDetailsClick = (customer) => {
-        navigate(`/customer/${customer._id}`);
+        navigate(`/customers/${customer._id}`);
     };
 
     customers = useLoaderData();
 
     return (
-        <div className="container">
+        <div>
             <h2>Klienci</h2>
 
             {customers.map((customer, index) => (
@@ -36,6 +36,9 @@ export const CustomersList = ({ customers }) => {
                     </div>
                 </div>
             ))}
+            <Link to={"/add-customer"}>
+                <button className="btn btn-success">Dodaj Klienta</button>
+            </Link>
         </div>
     );
 };

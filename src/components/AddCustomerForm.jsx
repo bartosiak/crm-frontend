@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Form } from "react-router-dom";
+import React from "react";
+import { Form, redirect } from "react-router-dom";
 
 export async function createNewCustomer(args) {
     const data = await args.request.formData();
@@ -17,26 +17,14 @@ export async function createNewCustomer(args) {
         headers: {
             "Content-type": "application/json",
         },
-    });
+    })
+        .then((response) => response.json())
+        .then((newCustomer) => {
+            return redirect(`/customers/${newCustomer._id}`);
+        });
 }
 
 export const AddCustomerForm = () => {
-    const [formData, setFormData] = useState({
-        name: "",
-        street: "",
-        zipCode: "",
-        city: "",
-        nip: "",
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
     return (
         <Form className="w-50" method="POST" action="/add-customer">
             <div className="mb-3">
@@ -49,8 +37,6 @@ export const AddCustomerForm = () => {
                     type="text"
                     id="name"
                     className="form-control"
-                    value={formData.name}
-                    onChange={handleChange}
                 />
             </div>
             <fieldset className="mb-3">
@@ -65,8 +51,6 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="street"
                         className="form-control"
-                        value={formData.street}
-                        onChange={handleChange}
                     />
                 </div>
                 <div className="mb-1">
@@ -79,8 +63,6 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="zipCode"
                         className="form-control"
-                        value={formData.zipCode}
-                        onChange={handleChange}
                     />
                 </div>
                 <div className="mb-1">
@@ -93,8 +75,6 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="city"
                         className="form-control"
-                        value={formData.city}
-                        onChange={handleChange}
                     />
                 </div>
             </fieldset>
@@ -108,8 +88,6 @@ export const AddCustomerForm = () => {
                     type="text"
                     id="nip"
                     className="form-control"
-                    value={formData.nip}
-                    onChange={handleChange}
                 />
             </div>
             <button type="submit" className="btn btn-primary">
