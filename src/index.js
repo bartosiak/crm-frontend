@@ -5,7 +5,7 @@ import "./index.css";
 import App from "./App";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CustomersList } from "./components/CustomersList";
-import { CustomerDetail } from "./components/CustomerDetail";
+import { CustomerDetail, deleteCustomer } from "./components/CustomerDetail";
 import { AddCustomerForm } from "./components/AddCustomerForm";
 import { createNewCustomer } from "./components/AddCustomerForm";
 import { CustomerEdit, updateCustomer } from "./components/CustomerEdit";
@@ -25,11 +25,18 @@ const router = createBrowserRouter([
             {
                 path: "/customers/:id",
                 element: <CustomerDetail />,
+
                 loader: ({ params }) => {
                     return fetch(
                         `http://localhost:4000/customers/${params.id}`
                     );
                 },
+                children: [
+                    {
+                        path: "delete",
+                        action: deleteCustomer,
+                    },
+                ],
             },
             {
                 path: "/add-customer",

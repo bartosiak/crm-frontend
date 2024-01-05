@@ -1,4 +1,12 @@
-import { useLoaderData } from "react-router-dom";
+import { Form, redirect, useLoaderData } from "react-router-dom";
+
+export function deleteCustomer({ params }) {
+    return fetch(`http://localhost:4000/customers/${params.id}`, {
+        method: "DELETE",
+    }).then(() => {
+        return redirect("/customers");
+    });
+}
 
 export const CustomerDetail = () => {
     const customer = useLoaderData();
@@ -18,6 +26,9 @@ export const CustomerDetail = () => {
                         <br />
                     </address>
                     <p className="card-text">NIP: {customer.nip}</p>
+                    <Form className="" method="DELETE" action="delete">
+                        <button className="btn btn-danger">Usuń</button>
+                    </Form>
                 </div>
             </div>
             <h2>Akcje</h2>

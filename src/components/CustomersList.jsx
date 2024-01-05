@@ -1,4 +1,6 @@
-import { Link, useLoaderData } from "react-router-dom";
+import { Form, Link, redirect, useLoaderData } from "react-router-dom";
+
+
 
 export const CustomersList = ({ customers }) => {
     customers = useLoaderData();
@@ -21,7 +23,7 @@ export const CustomersList = ({ customers }) => {
                             <br />
                         </address>
                         <p className="card-text">NIP: {customer.nip}</p>
-                        <div>
+                        <div className="d-flex">
                             <Link
                                 to={`/customers/${customer._id}`}
                                 className="btn btn-primary me-3"
@@ -33,12 +35,6 @@ export const CustomersList = ({ customers }) => {
                                 className="btn btn-warning me-3"
                             >
                                 Edycja
-                            </Link>
-                            <Link
-                                to={`/customers/${customer._id}`}
-                                className="btn btn-danger"
-                            >
-                                Usuń
                             </Link>
                         </div>
                     </div>
