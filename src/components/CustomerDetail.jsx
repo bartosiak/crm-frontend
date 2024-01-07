@@ -1,6 +1,6 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MyModal from "./MyModal";
 
 export function deleteCustomer({ params }) {
@@ -13,7 +13,7 @@ export function deleteCustomer({ params }) {
 
 export const CustomerDetail = () => {
     const customer = useLoaderData();
-    const actions = customer.actions;
+
     const [showModal, setShowModal] = useState(false);
     const [selectedAction, setSelectedAction] = useState({
         description: "",
@@ -21,12 +21,24 @@ export const CustomerDetail = () => {
         date: "",
     });
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [actions, setActions] = useState([]);
+
+    useEffect(() => {
+        fetchActions();
+    }, []);
+
+    const fetchActions = () => {
+        fetch(`http://localhost:4000/actions?customerId=${customer._id}`)
+            .then((response) => response.json())
+            .then((data) => setActions(data))
+            .catch((error) => console.error("Error:", error));
+    };
 
     const handleOpenModal = (action) => {
         setSelectedAction(action);
         setShowModal(true);
     };
-
+    console.log(selectedAction);
     const handleCloseModal = () => {
         setShowModal(false);
     };
@@ -46,7 +58,7 @@ export const CustomerDetail = () => {
                         <br />
                     </address>
                     <p className="card-text">NIP: {customer.nip}</p>
-                    <Form className="" method="DELETE" action="delete">
+                    <Form method="DELETE" action="delete">
                         <button className="btn btn-danger">Usuń</button>
                     </Form>
                 </div>
@@ -97,6 +109,7 @@ export const CustomerDetail = () => {
                 action={selectedAction}
                 selected={selectedDate}
                 onChange={(date) => setSelectedDate(date)}
+                refreshActions={fetchActions}
             />
         </div>
     );

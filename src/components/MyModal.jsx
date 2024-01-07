@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,14 +10,38 @@ function MyModal({
     action,
     selected,
     onChange,
+    refreshActions,
 }) {
+    const [updatedAction, setUpdatedAction] = useState(action);
+
+    useEffect(() => {
+        setUpdatedAction(action);
+    }, [action]);
+
+    const handleInputChange = (event) => {
+        setUpdatedAction({
+            ...updatedAction,
+            [event.target.name]: event.target.value,
+        });
+    };
+
+    function updateAction() {
+        console.log(updatedAction._id);
+        return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(updatedAction),
+        }).then(() => {
+            handleClose();
+            refreshActions();
+        });
+    }
+
     console.log(action);
     return (
         <>
-            <Button variant="primary" onClick={handleShow}>
-                Launch demo modal
-            </Button>
-
             <Modal show={show} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Opis</Modal.Title>
@@ -27,13 +51,18 @@ function MyModal({
                         <label htmlFor="description">Opis</label>
                         <textarea
                             name="description"
-                            defaultValue={action.description}
+                            defaultValue={updatedAction.description}
+                            onChange={handleInputChange}
                             rows="6"
                         />
                     </div>
                     <div className="mb-3 d-flex flex-column w-25">
                         <label htmlFor="type">Wybierz kontakt</label>
-                        <select name="type" defaultValue={action.type}>
+                        <select
+                            name="type"
+                            defaultValue={updatedAction.type}
+                            onChange={handleInputChange}
+                        >
                             <option value="option1">email</option>
                             <option value="option2">telefon</option>
                             <option value="option3">spotkanie</option>
@@ -51,7 +80,11 @@ function MyModal({
                     <Button variant="secondary" onClick={handleClose}>
                         Close
                     </Button>
-                    <Button variant="primary" onClick={handleClose}>
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        onClick={updateAction}
+                    >
                         Save Changes
                     </Button>
                 </Modal.Footer>
