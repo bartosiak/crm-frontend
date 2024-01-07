@@ -1,4 +1,7 @@
 import { Form, redirect, useLoaderData } from "react-router-dom";
+import "react-datepicker/dist/react-datepicker.css";
+import { useState } from "react";
+import MyModal from "./MyModal";
 
 export function deleteCustomer({ params }) {
     return fetch(`http://localhost:4000/customers/${params.id}`, {
@@ -11,6 +14,23 @@ export function deleteCustomer({ params }) {
 export const CustomerDetail = () => {
     const customer = useLoaderData();
     const actions = customer.actions;
+    const [showModal, setShowModal] = useState(false);
+    const [selectedAction, setSelectedAction] = useState({
+        description: "",
+        type: "",
+        date: "",
+    });
+    const [selectedDate, setSelectedDate] = useState(new Date());
+
+    const handleOpenModal = (action) => {
+        setSelectedAction(action);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
+
     return (
         <div>
             <div className="mb-5 card">
@@ -59,6 +79,7 @@ export const CustomerDetail = () => {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
+                                    onClick={() => handleOpenModal(action)}
                                 >
                                     Edytuj
                                 </button>
@@ -70,6 +91,13 @@ export const CustomerDetail = () => {
             <button type="button" className="btn btn-primary">
                 Dodaj akcje
             </button>
+            <MyModal
+                show={showModal}
+                handleClose={handleCloseModal}
+                action={selectedAction}
+                selected={selectedDate}
+                onChange={(date) => setSelectedDate(date)}
+            />
         </div>
     );
 };

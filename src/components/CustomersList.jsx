@@ -1,10 +1,14 @@
-import { Form, Link, redirect, useLoaderData } from "react-router-dom";
-
-
+import { Link, useLoaderData } from "react-router-dom";
 
 export const CustomersList = ({ customers }) => {
     customers = useLoaderData();
-
+    function deleteCustomer(customerId) {
+        return fetch(`http://localhost:4000/customers/${customerId}`, {
+            method: "DELETE",
+        }).then(() => {
+            alert("jestes pewny");
+        });
+    }
     return (
         <div>
             <h2>Klienci</h2>
@@ -36,6 +40,13 @@ export const CustomersList = ({ customers }) => {
                             >
                                 Edycja
                             </Link>
+                            <button
+                                onClick={() => {
+                                    deleteCustomer(customer._id);
+                                }}
+                            >
+                                Usuń
+                            </button>
                         </div>
                     </div>
                 </div>
