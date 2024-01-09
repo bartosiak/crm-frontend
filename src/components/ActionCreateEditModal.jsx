@@ -3,20 +3,19 @@ import { Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-function MyModal({
-    handleShow,
+function ActionEdit({
     handleClose,
     show,
     action,
-    selected,
-    onChange,
     refreshActions,
+    customerId,
+    isEditing,
 }) {
     const [updatedAction, setUpdatedAction] = useState(action);
 
     useEffect(() => {
         setUpdatedAction(action);
-    }, [action]);
+    }, [action, show]);
 
     const handleInputChange = (event) => {
         setUpdatedAction({
@@ -25,8 +24,11 @@ function MyModal({
         });
     };
 
+    const updateDate = (date) => {
+        setUpdatedAction({ ...updatedAction, date: date.toISOString() });
+    };
+
     function updateAction() {
-        console.log(updatedAction._id);
         return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
             method: "PUT",
             headers: {
@@ -39,7 +41,28 @@ function MyModal({
         });
     }
 
-    console.log(action);
+    function createAction() {
+        const newAction = { ...updatedAction, customer: customerId };
+        return fetch(`http://localhost:4000/actions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newAction),
+        }).then(() => {
+            handleClose();
+            refreshActions();
+        });
+    }
+
+    const handleSubmit = () => {
+        if (isEditing) {
+            updateAction();
+        } else {
+            createAction();
+        }
+    };
+
     return (
         <>
             <Modal show={show} onHide={handleClose} centered>
@@ -48,10 +71,10 @@ function MyModal({
                 </Modal.Header>
                 <Modal.Body>
                     <div className="mb-3 d-flex flex-column w-75 h-75">
-                        <label htmlFor="description">Opis</label>
+                        <label htmlFor="description">Akcje</label>
                         <textarea
                             name="description"
-                            defaultValue={updatedAction.description}
+                            defaultValue={action.description}
                             onChange={handleInputChange}
                             rows="6"
                         />
@@ -60,32 +83,32 @@ function MyModal({
                         <label htmlFor="type">Wybierz kontakt</label>
                         <select
                             name="type"
-                            defaultValue={updatedAction.type}
+                            defaultValue={action.type}
                             onChange={handleInputChange}
                         >
-                            <option value="option1">email</option>
-                            <option value="option2">telefon</option>
-                            <option value="option3">spotkanie</option>
+                            <option value="mail">email</option>
+                            <option value="phone">telefon</option>
+                            <option value="meeting">spotkanie</option>
                         </select>
                     </div>
                     <DatePicker
                         className="form-control form-control-sm"
                         showIcon
                         toggleCalendarOnIconClick
-                        selected={selected}
-                        onChange={onChange}
+                        selected={new Date(updatedAction.date)}
+                        onChange={updateDate}
                     />
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Close
+                        Zamknij
                     </Button>
                     <Button
                         type="submit"
                         variant="primary"
-                        onClick={updateAction}
+                        onClick={handleSubmit}
                     >
-                        Save Changes
+                        Zapisz zmiany
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -93,4 +116,4 @@ function MyModal({
     );
 }
 
-export default MyModal;
+export default ActionEdit;

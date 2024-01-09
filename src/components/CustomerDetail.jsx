@@ -1,44 +1,55 @@
-import { Form, redirect, useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
-import MyModal from "./MyModal";
-
-export function deleteCustomer({ params }) {
-    return fetch(`http://localhost:4000/customers/${params.id}`, {
-        method: "DELETE",
-    }).then(() => {
-        return redirect("/customers");
-    });
-}
+import ActionEdit from "./ActionCreateEditModal";
 
 export const CustomerDetail = () => {
     const customer = useLoaderData();
+    const customerId = customer._id;
 
     const [showModal, setShowModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const [selectedAction, setSelectedAction] = useState({
+        customer: "",
         description: "",
         type: "",
-        date: "",
+        date: new Date(),
     });
-    const [selectedDate, setSelectedDate] = useState(new Date());
     const [actions, setActions] = useState([]);
 
     useEffect(() => {
         fetchActions();
     }, []);
 
-    const fetchActions = () => {
-        fetch(`http://localhost:4000/actions?customerId=${customer._id}`)
-            .then((response) => response.json())
-            .then((data) => setActions(data))
-            .catch((error) => console.error("Error:", error));
+    const fetchActions = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:4000/actions?customer=${customerId}`
+            );
+            const data = await response.json();
+            setActions(data);
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
 
-    const handleOpenModal = (action) => {
+    const handleOpenEditModal = (action) => {
         setSelectedAction(action);
+        setIsEditing(true);
         setShowModal(true);
     };
-    console.log(selectedAction);
+
+    const handleOpenCreateModal = () => {
+        setSelectedAction({
+            customer: customerId,
+            description: "",
+            type: "mail",
+            date: new Date(),
+        });
+        setIsEditing(false);
+        setShowModal(true);
+    };
+
     const handleCloseModal = () => {
         setShowModal(false);
     };
@@ -58,9 +69,6 @@ export const CustomerDetail = () => {
                         <br />
                     </address>
                     <p className="card-text">NIP: {customer.nip}</p>
-                    <Form method="DELETE" action="delete">
-                        <button className="btn btn-danger">Usuń</button>
-                    </Form>
                 </div>
             </div>
             <h2>Akcje</h2>
@@ -80,7 +88,9 @@ export const CustomerDetail = () => {
                             <td>{index + 1}.</td>
                             <td>{action.description}</td>
                             <td>{action.type}</td>
-                            <td>{action.date}</td>
+                            <td>
+                                {new Date(action.date).toLocaleDateString()}
+                            </td>
                             <td>
                                 <button
                                     type="button"
@@ -91,7 +101,7 @@ export const CustomerDetail = () => {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
-                                    onClick={() => handleOpenModal(action)}
+                                    onClick={() => handleOpenEditModal(action)}
                                 >
                                     Edytuj
                                 </button>
@@ -100,16 +110,21 @@ export const CustomerDetail = () => {
                     ))}
                 </tbody>
             </table>
-            <button type="button" className="btn btn-primary">
+            <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleOpenCreateModal}
+            >
                 Dodaj akcje
             </button>
-            <MyModal
+
+            <ActionEdit
                 show={showModal}
                 handleClose={handleCloseModal}
                 action={selectedAction}
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
                 refreshActions={fetchActions}
+                customerId={customerId}
+                isEditing={isEditing}
             />
         </div>
     );

@@ -41,6 +41,7 @@ export const CustomersList = ({ customers }) => {
                                 Edycja
                             </Link>
                             <button
+                                className="btn btn-danger"
                                 onClick={() => {
                                     deleteCustomer(customer._id);
                                 }}
