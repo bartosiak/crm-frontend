@@ -1,7 +1,7 @@
 import { useLoaderData } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
-import ActionEdit from "./ActionCreateEditModal";
+import ActionCreateEditModal from "./ActionCreateEditModal";
 
 export const CustomerDetail = () => {
     const customer = useLoaderData();
@@ -19,6 +19,7 @@ export const CustomerDetail = () => {
 
     useEffect(() => {
         fetchActions();
+        // eslint-disable-next-line
     }, []);
 
     const fetchActions = async () => {
@@ -118,7 +119,7 @@ export const CustomerDetail = () => {
                 Dodaj akcje
             </button>
 
-            <ActionEdit
+            <ActionCreateEditModal
                 show={showModal}
                 handleClose={handleCloseModal}
                 action={selectedAction}

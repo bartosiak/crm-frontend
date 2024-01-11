@@ -11,8 +11,8 @@ export const NavBar = () => {
                     <Link className="nav-link" to={"/add-customer"}>
                         Dodaj klienta
                     </Link>
-                    <Link className="nav-link" to={"/logout"}>
-                        Logout
+                    <Link className="nav-link" to={"/login"}>
+                        Login
                     </Link>
                 </div>
             </div>

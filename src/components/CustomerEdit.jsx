@@ -3,7 +3,6 @@ import { Form, redirect, useLoaderData } from "react-router-dom";
 
 export async function updateCustomer({ request, params }) {
     const data = await request.formData();
-    console.log(data);
 
     return fetch(`http://localhost:4000/customers/${params.id}`, {
         method: "PUT",

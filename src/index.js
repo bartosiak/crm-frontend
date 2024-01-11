@@ -9,10 +9,16 @@ import { CustomerDetail } from "./components/CustomerDetail";
 import { AddCustomerForm } from "./components/AddCustomerForm";
 import { createNewCustomer } from "./components/AddCustomerForm";
 import { CustomerEdit, updateCustomer } from "./components/CustomerEdit";
+import { LoginForm } from "./components/LoginForm";
+import { PrivateRoute } from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
     {
-        element: <App />,
+        element: (
+            <PrivateRoute>
+                <App />
+            </PrivateRoute>
+        ),
         path: "/",
         children: [
             {
@@ -48,6 +54,10 @@ const router = createBrowserRouter([
                 },
             },
         ],
+    },
+    {
+        path: "/login",
+        element: <LoginForm />,
     },
 ]);
 
