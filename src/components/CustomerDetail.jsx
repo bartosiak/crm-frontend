@@ -24,8 +24,14 @@ export const CustomerDetail = () => {
 
     const fetchActions = async () => {
         try {
+            const token = localStorage.getItem("token");
             const response = await fetch(
-                `http://localhost:4000/actions?customer=${customerId}`
+                `http://localhost:4000/actions?customer=${customerId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
             );
             const data = await response.json();
             setActions(data);

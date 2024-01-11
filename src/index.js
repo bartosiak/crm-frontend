@@ -12,6 +12,16 @@ import { CustomerEdit, updateCustomer } from "./components/CustomerEdit";
 import { LoginForm } from "./components/LoginForm";
 import { PrivateRoute } from "./components/PrivateRoute";
 
+const fetchData = (url) => {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    return fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 const router = createBrowserRouter([
     {
         element: (
@@ -25,7 +35,7 @@ const router = createBrowserRouter([
                 path: "/customers",
                 element: <CustomersList />,
                 loader: () => {
-                    return fetch("http://localhost:4000/customers");
+                    return fetchData("http://localhost:4000/customers");
                 },
             },
             {
@@ -33,7 +43,7 @@ const router = createBrowserRouter([
                 element: <CustomerDetail />,
 
                 loader: ({ params }) => {
-                    return fetch(
+                    return fetchData(
                         `http://localhost:4000/customers/${params.id}`
                     );
                 },
@@ -48,7 +58,7 @@ const router = createBrowserRouter([
                 element: <CustomerEdit />,
                 action: updateCustomer,
                 loader: ({ params }) => {
-                    return fetch(
+                    return fetchData(
                         `http://localhost:4000/customers/${params.id}`
                     );
                 },

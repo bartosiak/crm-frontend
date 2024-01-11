@@ -25,7 +25,7 @@ export const LoginForm = () => {
         console.log(result);
 
         // Zapisz token w localStorage
-        localStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.jwt);
 
         return result;
     };
