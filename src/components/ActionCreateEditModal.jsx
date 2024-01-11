@@ -29,10 +29,12 @@ function ActionCreateEditModal({
     };
 
     function updateAction() {
+        const token = localStorage.getItem("token");
         return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(updatedAction),
         }).then(() => {
@@ -42,11 +44,13 @@ function ActionCreateEditModal({
     }
 
     function createAction() {
+        const token = localStorage.getItem("token");
         const newAction = { ...updatedAction, customer: customerId };
         return fetch(`http://localhost:4000/actions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(newAction),
         }).then(() => {

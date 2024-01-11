@@ -24,7 +24,6 @@ export const LoginForm = () => {
         const result = await response.json();
         console.log(result);
 
-        // Zapisz token w localStorage
         localStorage.setItem("token", result.jwt);
 
         return result;

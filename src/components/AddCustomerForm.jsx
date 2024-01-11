@@ -3,6 +3,7 @@ import { Form, redirect } from "react-router-dom";
 
 export async function createNewCustomer(args) {
     const data = await args.request.formData();
+    const token = localStorage.getItem("token");
     return fetch("http://localhost:4000/customers", {
         method: "POST",
         body: JSON.stringify({
@@ -16,6 +17,7 @@ export async function createNewCustomer(args) {
         }),
         headers: {
             "Content-type": "application/json",
+            Authorization: `Bearer ${token}`,
         },
     })
         .then((response) => response.json())
