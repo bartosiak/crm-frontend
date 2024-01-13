@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-export function PrivateRoute({ children }) {
+export const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem("token");
     const isAuth = !!token;
     const navigate = useNavigate();
@@ -17,4 +17,4 @@ export function PrivateRoute({ children }) {
     }
 
     return children;
-}
+};

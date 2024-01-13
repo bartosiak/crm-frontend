@@ -22,22 +22,25 @@ export const CustomerDetail = () => {
         // eslint-disable-next-line
     }, []);
 
-    const fetchActions = async () => {
-        try {
-            const token = localStorage.getItem("token");
-            const response = await fetch(
-                `http://localhost:4000/actions?customer=${customerId}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
+    const fetchActions = () => {
+        const token = localStorage.getItem("token");
+        fetch(`http://localhost:4000/actions?customer=${customerId}`, {
+            headers: {
+                Authorization: token,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
-            );
-            const data = await response.json();
-            setActions(data);
-        } catch (error) {
-            console.error("Error:", error);
-        }
+                return response.json();
+            })
+            .then((data) => {
+                setActions(data);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     };
 
     const handleOpenEditModal = (action) => {
@@ -59,6 +62,27 @@ export const CustomerDetail = () => {
 
     const handleCloseModal = () => {
         setShowModal(false);
+    };
+
+    const handleDeleteAction = (actionId) => {
+        console.log(actionId);
+        const token = localStorage.getItem("token");
+        fetch(`http://localhost:4000/actions/${actionId._id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization: token,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                } else {
+                    fetchActions();
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     };
 
     return (
@@ -102,6 +126,7 @@ export const CustomerDetail = () => {
                                 <button
                                     type="button"
                                     className="btn btn-primary"
+                                    onClick={() => handleDeleteAction(action)}
                                 >
                                     Usuń
                                 </button>

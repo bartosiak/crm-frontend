@@ -1,28 +1,28 @@
 import React from "react";
 import { Form, redirect, useLoaderData } from "react-router-dom";
 
-export async function updateCustomer({ request, params }) {
-    const data = await request.formData();
-
-    return fetch(`http://localhost:4000/customers/${params.id}`, {
-        method: "PUT",
-        body: JSON.stringify({
-            name: data.get("name"),
-            address: {
-                street: data.get("street"),
-                zipCode: data.get("zipCode"),
-                city: data.get("city"),
+export function updateCustomer({ request, params }) {
+    request.formData().then((data) => {
+        fetch(`http://localhost:4000/customers/${params.id}`, {
+            method: "PUT",
+            body: JSON.stringify({
+                name: data.get("name"),
+                address: {
+                    street: data.get("street"),
+                    zipCode: data.get("zipCode"),
+                    city: data.get("city"),
+                },
+                nip: data.get("nip"),
+            }),
+            headers: {
+                "Content-type": "application/json",
             },
-            nip: data.get("nip"),
-        }),
-        headers: {
-            "Content-type": "application/json",
-        },
-    })
-        .then((response) => response.json())
-        .then((customer) => {
-            return redirect(`/customers/${customer._id}`);
-        });
+        })
+            .then((response) => response.json())
+            .then((customer) => {
+                return redirect(`/customers/${customer._id}`);
+            });
+    });
 }
 
 export const CustomerEdit = () => {

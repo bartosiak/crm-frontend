@@ -17,7 +17,7 @@ const fetchData = (url) => {
     console.log(token);
     return fetch(url, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
         },
     });
 };
@@ -41,7 +41,6 @@ const router = createBrowserRouter([
             {
                 path: "/customers/:id",
                 element: <CustomerDetail />,
-
                 loader: ({ params }) => {
                     return fetchData(
                         `http://localhost:4000/customers/${params.id}`

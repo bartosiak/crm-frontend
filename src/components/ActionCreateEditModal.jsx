@@ -28,36 +28,46 @@ function ActionCreateEditModal({
         setUpdatedAction({ ...updatedAction, date: date.toISOString() });
     };
 
-    function updateAction() {
+    const updateAction = () => {
         const token = localStorage.getItem("token");
         return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: token,
             },
             body: JSON.stringify(updatedAction),
-        }).then(() => {
-            handleClose();
-            refreshActions();
-        });
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response;
+            })
+            .then(() => {
+                handleClose();
+                refreshActions();
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
     }
 
-    function createAction() {
+    const createAction = () => {
         const token = localStorage.getItem("token");
         const newAction = { ...updatedAction, customer: customerId };
         return fetch(`http://localhost:4000/actions`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
+                Authorization: token,
             },
             body: JSON.stringify(newAction),
         }).then(() => {
             handleClose();
             refreshActions();
         });
-    }
+    };
 
     const handleSubmit = () => {
         if (isEditing) {

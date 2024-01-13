@@ -7,34 +7,36 @@ export const LoginForm = () => {
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
 
-    const loginUser = async (email, password) => {
+    const loginUser = (email, password) => {
         console.log("Sending fetch request with data:", { email, password });
 
-        const response = await fetch("http://localhost:4000/login", {
+        return fetch("http://localhost:4000/login", {
             method: "POST",
             body: JSON.stringify({ email, password }),
             headers: {
                 "Content-type": "application/json",
             },
-        });
-
-        if (!response.ok) {
-            console.error(`HTTP error! status: ${response.status}`);
-        }
-        const result = await response.json();
-        console.log(result);
-
-        localStorage.setItem("token", result.jwt);
-
-        return result;
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    console.error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((result) => {
+                console.log(result);
+                localStorage.setItem("token", result.jwt);
+                return result;
+            });
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        const result = await loginUser(email, password);
-        if (result) {
-            navigate("/customers");
-        }
+        loginUser(email, password).then((result) => {
+            if (result) {
+                navigate("/customers");
+            }
+        });
     };
 
     return (
@@ -54,6 +56,7 @@ export const LoginForm = () => {
                         autoComplete="off"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
                     />
                 </div>
                 <div className="mb-3">

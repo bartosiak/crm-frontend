@@ -3,8 +3,12 @@ import { Link, useLoaderData } from "react-router-dom";
 export const CustomersList = ({ customers }) => {
     customers = useLoaderData();
     function deleteCustomer(customerId) {
-        return fetch(`http://localhost:4000/customers/${customerId}`, {
+        const token = localStorage.getItem("token");
+        fetch(`http://localhost:4000/customers/${customerId}`, {
             method: "DELETE",
+            headers: {
+                Authorization: token,
+            },
         }).then(() => {
             alert("jestes pewny");
         });

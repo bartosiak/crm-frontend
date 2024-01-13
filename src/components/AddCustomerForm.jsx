@@ -1,29 +1,35 @@
 import React from "react";
 import { Form, redirect } from "react-router-dom";
 
-export async function createNewCustomer(args) {
-    const data = await args.request.formData();
-    const token = localStorage.getItem("token");
-    return fetch("http://localhost:4000/customers", {
-        method: "POST",
-        body: JSON.stringify({
-            name: data.get("name"),
-            address: {
-                street: data.get("street"),
-                zipCode: data.get("zipCode"),
-                city: data.get("city"),
+export function createNewCustomer(args) {
+    return args.request.formData().then((data) => {
+        const token = localStorage.getItem("token");
+        return fetch("http://localhost:4000/customers", {
+            method: "POST",
+            body: JSON.stringify({
+                name: data.get("name"),
+                address: {
+                    street: data.get("street"),
+                    zipCode: data.get("zipCode"),
+                    city: data.get("city"),
+                },
+                nip: data.get("nip"),
+            }),
+            headers: {
+                "Content-type": "application/json",
+                Authorization: token,
             },
-            nip: data.get("nip"),
-        }),
-        headers: {
-            "Content-type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-    })
-        .then((response) => response.json())
-        .then((newCustomer) => {
-            return redirect(`/customers/${newCustomer._id}`);
-        });
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((newCustomer) => {
+                return redirect(`/customers/${newCustomer._id}`);
+            });
+    });
 }
 
 export const AddCustomerForm = () => {
