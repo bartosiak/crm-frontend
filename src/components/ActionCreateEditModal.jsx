@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
@@ -29,7 +30,7 @@ function ActionCreateEditModal({
     };
 
     const updateAction = () => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token"); 
         return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
             method: "PUT",
             headers: {
@@ -54,7 +55,7 @@ function ActionCreateEditModal({
     }
 
     const createAction = () => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token"); 
         const newAction = { ...updatedAction, customer: customerId };
         return fetch(`http://localhost:4000/actions`, {
             method: "POST",

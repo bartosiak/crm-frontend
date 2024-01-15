@@ -1,9 +1,10 @@
+import Cookies from "js-cookie";
 import { Link, useLoaderData } from "react-router-dom";
 
 export const CustomersList = ({ customers }) => {
     customers = useLoaderData();
     function deleteCustomer(customerId) {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         fetch(`http://localhost:4000/customers/${customerId}`, {
             method: "DELETE",
             headers: {

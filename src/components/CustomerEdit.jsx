@@ -1,8 +1,10 @@
+import Cookies from "js-cookie";
 import React from "react";
 import { Form, redirect, useLoaderData } from "react-router-dom";
 
 export function updateCustomer({ request, params }) {
-    request.formData().then((data) => {
+    const token = Cookies.get("token");
+    return request.formData().then((data) => {
         fetch(`http://localhost:4000/customers/${params.id}`, {
             method: "PUT",
             body: JSON.stringify({
@@ -16,11 +18,13 @@ export function updateCustomer({ request, params }) {
             }),
             headers: {
                 "Content-type": "application/json",
+                Authorization: token,
             },
         })
             .then((response) => response.json())
             .then((customer) => {
-                return redirect(`/customers/${customer._id}`);
+                console.log(customer);
+                redirect(`/customers/${customer._id}`);
             });
     });
 }
@@ -30,7 +34,11 @@ export const CustomerEdit = () => {
     console.log(customer._id);
 
     return (
-        <Form className="w-50" method="PUT">
+        <Form
+            className="w-50"
+            method="PUT"
+            action={`/edit-customer/${customer._id}`}
+        >
             <div className="mb-3">
                 <label className="form-label" htmlFor="name">
                     Nazwa klienta

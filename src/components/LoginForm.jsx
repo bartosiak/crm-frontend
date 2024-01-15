@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NavBar } from "./NavBar";
+import Cookies from "js-cookie";
 
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
@@ -25,7 +26,7 @@ export const LoginForm = () => {
             })
             .then((result) => {
                 console.log(result);
-                localStorage.setItem("token", result.jwt);
+                Cookies.set("token", result.jwt);
                 return result;
             });
     };

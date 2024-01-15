@@ -1,9 +1,10 @@
+import Cookies from "js-cookie";
 import React from "react";
 import { Form, redirect } from "react-router-dom";
 
 export function createNewCustomer(args) {
     return args.request.formData().then((data) => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token"); 
         return fetch("http://localhost:4000/customers", {
             method: "POST",
             body: JSON.stringify({

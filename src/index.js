@@ -11,9 +11,10 @@ import { createNewCustomer } from "./components/AddCustomerForm";
 import { CustomerEdit, updateCustomer } from "./components/CustomerEdit";
 import { LoginForm } from "./components/LoginForm";
 import { PrivateRoute } from "./components/PrivateRoute";
+import Cookies from "js-cookie";
 
 const fetchData = (url) => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     console.log(token);
     return fetch(url, {
         headers: {

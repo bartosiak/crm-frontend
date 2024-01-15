@@ -1,7 +1,8 @@
+import Cookies from "js-cookie";
 import { Link } from "react-router-dom";
 
 export const NavBar = () => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     const isAuth = !!token;
 
     return (

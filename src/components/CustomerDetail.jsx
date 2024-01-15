@@ -2,6 +2,7 @@ import { useLoaderData } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
 import ActionCreateEditModal from "./ActionCreateEditModal";
+import Cookies from "js-cookie";
 
 export const CustomerDetail = () => {
     const customer = useLoaderData();
@@ -23,7 +24,7 @@ export const CustomerDetail = () => {
     }, []);
 
     const fetchActions = () => {
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         fetch(`http://localhost:4000/actions?customer=${customerId}`, {
             headers: {
                 Authorization: token,
@@ -66,7 +67,7 @@ export const CustomerDetail = () => {
 
     const handleDeleteAction = (actionId) => {
         console.log(actionId);
-        const token = localStorage.getItem("token");
+        const token = Cookies.get("token");
         fetch(`http://localhost:4000/actions/${actionId._id}`, {
             method: "DELETE",
             headers: {

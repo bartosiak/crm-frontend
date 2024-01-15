@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 export const PrivateRoute = ({ children }) => {
-    const token = localStorage.getItem("token");
+    const token = Cookies.get("token");
     const isAuth = !!token;
     const navigate = useNavigate();
 
