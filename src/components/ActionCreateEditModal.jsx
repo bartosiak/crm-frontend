@@ -8,7 +8,6 @@ function ActionCreateEditModal({
     handleClose,
     show,
     action,
-    refreshActions,
     customerId,
     isEditing,
 }) {
@@ -30,7 +29,7 @@ function ActionCreateEditModal({
     };
 
     const updateAction = () => {
-        const token = Cookies.get("token"); 
+        const token = Cookies.get("token");
         return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
             method: "PUT",
             headers: {
@@ -47,15 +46,14 @@ function ActionCreateEditModal({
             })
             .then(() => {
                 handleClose();
-                refreshActions();
             })
             .catch((error) => {
                 console.error("Error:", error);
             });
-    }
+    };
 
     const createAction = () => {
-        const token = Cookies.get("token"); 
+        const token = Cookies.get("token");
         const newAction = { ...updatedAction, customer: customerId };
         return fetch(`http://localhost:4000/actions`, {
             method: "POST",
@@ -66,7 +64,6 @@ function ActionCreateEditModal({
             body: JSON.stringify(newAction),
         }).then(() => {
             handleClose();
-            refreshActions();
         });
     };
 

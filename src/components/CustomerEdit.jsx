@@ -1,44 +1,42 @@
-import Cookies from "js-cookie";
-import React from "react";
-import { Form, redirect, useLoaderData } from "react-router-dom";
-
-export function updateCustomer({ request, params }) {
-    const token = Cookies.get("token");
-    return request.formData().then((data) => {
-        fetch(`http://localhost:4000/customers/${params.id}`, {
-            method: "PUT",
-            body: JSON.stringify({
-                name: data.get("name"),
-                address: {
-                    street: data.get("street"),
-                    zipCode: data.get("zipCode"),
-                    city: data.get("city"),
-                },
-                nip: data.get("nip"),
-            }),
-            headers: {
-                "Content-type": "application/json",
-                Authorization: token,
-            },
-        })
-            .then((response) => response.json())
-            .then((customer) => {
-                console.log(customer);
-                redirect(`/customers/${customer._id}`);
-            });
-    });
-}
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { customerApiService } from "../apiService/customerApiService";
 
 export const CustomerEdit = () => {
-    const customer = useLoaderData();
-    console.log(customer._id);
+    const [customer, setCustomer] = useState(null);
+    const params = useParams();
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        customerApiService.get(params.id).then((customer) => {
+            setCustomer(customer);
+        });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const updateCustomer = (event) => {
+        event.preventDefault();
+
+        const customerData = {
+            name: event.target.name.value,
+            address: {
+                street: event.target.street.value,
+                zipCode: event.target.zipCode.value,
+                city: event.target.city.value,
+            },
+            nip: event.target.nip.value,
+        };
+
+        customerApiService.update(params.id, customerData).then(() => {
+            console.log("nastąpiło przekierowanie");
+            navigate("/customers");
+        });
+    };
 
     return (
-        <Form
-            className="w-50"
-            method="PUT"
-            action={`/edit-customer/${customer._id}`}
-        >
+        <form className="w-50" method="PUT" onSubmit={updateCustomer}>
             <div className="mb-3">
                 <label className="form-label" htmlFor="name">
                     Nazwa klienta
@@ -48,7 +46,7 @@ export const CustomerEdit = () => {
                     placeholder="Nazwa klienta"
                     type="text"
                     id="name"
-                    defaultValue={customer.name}
+                    defaultValue={customer?.name}
                     className="form-control"
                 />
             </div>
@@ -63,7 +61,7 @@ export const CustomerEdit = () => {
                         placeholder="Ulica numer"
                         type="text"
                         id="street"
-                        defaultValue={customer.address.street}
+                        defaultValue={customer?.address.street}
                         className="form-control"
                     />
                 </div>
@@ -76,7 +74,7 @@ export const CustomerEdit = () => {
                         placeholder="Kod pocztowy"
                         type="text"
                         id="zipCode"
-                        defaultValue={customer.address.zipCode}
+                        defaultValue={customer?.address.zipCode}
                         className="form-control"
                     />
                 </div>
@@ -89,7 +87,7 @@ export const CustomerEdit = () => {
                         placeholder="Miasto"
                         type="text"
                         id="city"
-                        defaultValue={customer.address.city}
+                        defaultValue={customer?.address.city}
                         className="form-control"
                     />
                 </div>
@@ -103,13 +101,13 @@ export const CustomerEdit = () => {
                     placeholder="NIP klienta"
                     type="text"
                     id="nip"
-                    defaultValue={customer.nip}
+                    defaultValue={customer?.nip}
                     className="form-control"
                 />
             </div>
             <button type="submit" className="btn btn-primary">
-                Dodaj
+                Zaktualizuj
             </button>
-        </Form>
+        </form>
     );
 };

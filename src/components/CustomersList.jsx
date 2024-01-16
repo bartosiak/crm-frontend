@@ -1,8 +1,17 @@
 import Cookies from "js-cookie";
-import { Link, useLoaderData } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { customerApiService } from "../apiService/customerApiService";
 
-export const CustomersList = ({ customers }) => {
-    customers = useLoaderData();
+export const CustomersList = () => {
+    const [customers, setCustomers] = useState([]);
+
+    useEffect(() => {
+        customerApiService.list().then((customers) => {
+            setCustomers(customers);
+        });
+    }, []);
+
     function deleteCustomer(customerId) {
         const token = Cookies.get("token");
         fetch(`http://localhost:4000/customers/${customerId}`, {
@@ -24,23 +33,23 @@ export const CustomersList = ({ customers }) => {
                         <div className="card-title h5">{customer.name}</div>
                         <strong>Adres</strong>
                         <address>
-                            {customer.address.street}
+                            {customer?.address.street}
                             <br />
-                            {customer.address.zipCode}
+                            {customer?.address.zipCode}
                             <br />
-                            {customer.address.city}
+                            {customer?.address.city}
                             <br />
                         </address>
-                        <p className="card-text">NIP: {customer.nip}</p>
+                        <p className="card-text">NIP: {customer?.nip}</p>
                         <div className="d-flex">
                             <Link
-                                to={`/customers/${customer._id}`}
+                                to={`/customers/${customer?._id}`}
                                 className="btn btn-primary me-3"
                             >
                                 Szczegóły
                             </Link>
                             <Link
-                                to={`/edit-customer/${customer._id}`}
+                                to={`/edit-customer/${customer?._id}`}
                                 className="btn btn-warning me-3"
                             >
                                 Edycja
@@ -48,7 +57,7 @@ export const CustomersList = ({ customers }) => {
                             <button
                                 className="btn btn-danger"
                                 onClick={() => {
-                                    deleteCustomer(customer._id);
+                                    deleteCustomer(customer?._id);
                                 }}
                             >
                                 Usuń
