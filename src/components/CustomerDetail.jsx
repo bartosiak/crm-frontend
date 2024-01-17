@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "react-datepicker/dist/react-datepicker.css";
 import { useEffect, useState } from "react";
 import ActionCreateEditModal from "./ActionCreateEditModal";
@@ -6,6 +6,7 @@ import { customerApiService } from "../apiService/customerApiService";
 import { actionApiService } from "../apiService/actionApiService";
 
 export const CustomerDetail = () => {
+    const navigate = useNavigate()
     const [customer, setCustomer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -23,9 +24,15 @@ export const CustomerDetail = () => {
     useEffect(() => {
         customerApiService.get(params.id).then((customer) => {
             setCustomer(customer);
+        }).catch((err)=>{
+            navigate("/customers")
         });
         actionApiService.list(params.id).then((action) => {
             setAction(action);
+        }).catch((err)=>{
+            if (err) {
+
+            }
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -37,32 +44,6 @@ export const CustomerDetail = () => {
             });
         }
     }, [isModalOpen, params.id]);
-
-    // useEffect(() => {
-    //     fetchActions();
-    //     // eslint-disable-next-line
-    // }, []);
-
-    // const fetchActions = () => {
-    //     const token = Cookies.get("token");
-    //     fetch(`http://localhost:4000/actions?customer=${customerId}`, {
-    //         headers: {
-    //             Authorization: token,
-    //         },
-    //     })
-    //         .then((response) => {
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! status: ${response.status}`);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then((data) => {
-    //             setActions(data);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error:", error);
-    //         });
-    // };
 
     const handleOpenEditModal = (action) => {
         setSelectedAction(action);

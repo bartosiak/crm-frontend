@@ -7,9 +7,9 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { CustomersList } from "./components/CustomersList";
 import { CustomerDetail } from "./components/CustomerDetail";
 import { AddCustomerForm } from "./components/AddCustomerForm";
-import { createNewCustomer } from "./components/AddCustomerForm";
 import { CustomerEdit } from "./components/CustomerEdit";
 import { LoginForm } from "./components/LoginForm";
+import { Signup } from "./components/Signup";
 // import { PrivateRoute } from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
@@ -27,7 +27,6 @@ const router = createBrowserRouter([
             },
             {
                 path: "/add-customer",
-                action: createNewCustomer,
                 element: <AddCustomerForm />,
             },
             {
@@ -39,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <LoginForm />,
+    },
+    {
+        path: "/signup",
+        element: <Signup />,
     },
 ]);
 

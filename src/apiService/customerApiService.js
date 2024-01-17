@@ -30,18 +30,22 @@ export const customerApiService = {
             const customer = await response.json();
             return customer;
         } catch (error) {
-            console.log(error);
+            return error;
         }
     },
     create: async (customerData) => {
         try {
-            const response = await fetch(`http://localhost:4000/customers/`, {
+            const response = await fetch(`http://localhost:4000/customers`, {
                 method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: token,
                 },
                 body: JSON.stringify(customerData),
             });
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const customer = await response.json();
             return customer;
         } catch (error) {

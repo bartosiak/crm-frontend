@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { NavBar } from "./NavBar";
-import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 import { loginApiService } from "../apiService/loginApiService";
 
-export const LoginForm = () => {
+export const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
@@ -13,11 +12,10 @@ export const LoginForm = () => {
         e.preventDefault();
         console.log("Sending fetch request with data:", { email, password });
         loginApiService
-            .login({ email: email, password: password })
+            .create({ email: email, password: password })
             .then((result) => {
                 console.log(result);
-                Cookies.set("token", result.jwt);
-                navigate("/customers");
+                navigate("/login");
             });
     };
 
@@ -57,7 +55,7 @@ export const LoginForm = () => {
                     />
                 </div>
                 <button type="submit" className="btn btn-primary">
-                    Zaloguj
+                    Zarejestruj
                 </button>
             </form>
         </div>

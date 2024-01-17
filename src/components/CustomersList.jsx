@@ -1,10 +1,22 @@
-import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { customerApiService } from "../apiService/customerApiService";
+import Popup from "./Popup";
 
 export const CustomersList = () => {
     const [customers, setCustomers] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [customerToDelete, setCustomerToDelete] = useState(null);
+
+    const handleDeleteClick = (customerId) => {
+        setCustomerToDelete(customerId);
+        setShowPopup(true);
+    };
+
+    const handleConfirmDelete = () => {
+        deleteCustomer(customerToDelete);
+        setShowPopup(false);
+    };
 
     useEffect(() => {
         customerApiService.list().then((customers) => {
@@ -13,16 +25,13 @@ export const CustomersList = () => {
     }, []);
 
     function deleteCustomer(customerId) {
-        const token = Cookies.get("token");
-        fetch(`http://localhost:4000/customers/${customerId}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: token,
-            },
-        }).then(() => {
-            alert("jestes pewny");
+        customerApiService.delete(customerId).then(() => {
+            customerApiService.list().then((customers) => {
+                setCustomers(customers);
+            });
         });
     }
+
     return (
         <div>
             <h2>Klienci</h2>
@@ -56,12 +65,18 @@ export const CustomersList = () => {
                             </Link>
                             <button
                                 className="btn btn-danger"
-                                onClick={() => {
-                                    deleteCustomer(customer?._id);
-                                }}
+                                onClick={() => handleDeleteClick(customer._id)}
                             >
                                 Usuń
                             </button>
+                            {showPopup && (
+                                <Popup
+                                    title="Potwierdź usunięcie"
+                                    message="Czy na pewno chcesz usunąć tego klienta?"
+                                    onConfirm={handleConfirmDelete}
+                                    onCancel={() => setShowPopup(false)}
+                                />
+                            )}
                         </div>
                     </div>
                 </div>

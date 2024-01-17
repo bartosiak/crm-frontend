@@ -1,8 +1,8 @@
-import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { actionApiService } from "../apiService/actionApiService";
 
 function ActionCreateEditModal({
     handleClose,
@@ -28,48 +28,23 @@ function ActionCreateEditModal({
         setUpdatedAction({ ...updatedAction, date: date.toISOString() });
     };
 
-    const updateAction = () => {
-        const token = Cookies.get("token");
-        return fetch(`http://localhost:4000/actions/${updatedAction._id}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-            },
-            body: JSON.stringify(updatedAction),
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response;
-            })
-            .then(() => {
-                handleClose();
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            });
+    const updateAction = (updatedAction) => {
+        actionApiService.update(updatedAction).then((action) => {
+            setUpdatedAction(action);
+            handleClose();
+        });
     };
 
     const createAction = () => {
-        const token = Cookies.get("token");
         const newAction = { ...updatedAction, customer: customerId };
-        return fetch(`http://localhost:4000/actions`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: token,
-            },
-            body: JSON.stringify(newAction),
-        }).then(() => {
+        actionApiService.create(newAction).then(() => {
             handleClose();
         });
     };
 
     const handleSubmit = () => {
         if (isEditing) {
-            updateAction();
+            updateAction(updatedAction);
         } else {
             createAction();
         }
@@ -86,7 +61,7 @@ function ActionCreateEditModal({
                         <label htmlFor="description">Akcje</label>
                         <textarea
                             name="description"
-                            defaultValue={action.description}
+                            defaultValue={action?.description}
                             onChange={handleInputChange}
                             rows="6"
                         />
@@ -95,7 +70,7 @@ function ActionCreateEditModal({
                         <label htmlFor="type">Wybierz kontakt</label>
                         <select
                             name="type"
-                            defaultValue={action.type}
+                            defaultValue={action?.type}
                             onChange={handleInputChange}
                         >
                             <option value="mail">email</option>
@@ -107,7 +82,7 @@ function ActionCreateEditModal({
                         className="form-control form-control-sm"
                         showIcon
                         toggleCalendarOnIconClick
-                        selected={new Date(updatedAction.date)}
+                        selected={new Date(updatedAction?.date)}
                         onChange={updateDate}
                     />
                 </Modal.Body>

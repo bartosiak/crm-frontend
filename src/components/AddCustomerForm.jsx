@@ -1,41 +1,45 @@
-import Cookies from "js-cookie";
-import React from "react";
-import { Form, redirect } from "react-router-dom";
-
-export function createNewCustomer(args) {
-    return args.request.formData().then((data) => {
-        const token = Cookies.get("token"); 
-        return fetch("http://localhost:4000/customers", {
-            method: "POST",
-            body: JSON.stringify({
-                name: data.get("name"),
-                address: {
-                    street: data.get("street"),
-                    zipCode: data.get("zipCode"),
-                    city: data.get("city"),
-                },
-                nip: data.get("nip"),
-            }),
-            headers: {
-                "Content-type": "application/json",
-                Authorization: token,
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then((newCustomer) => {
-                return redirect(`/customers/${newCustomer._id}`);
-            });
-    });
-}
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { customerApiService } from "../apiService/customerApiService";
 
 export const AddCustomerForm = () => {
+    const navigate = useNavigate();
+    const [customerFormData, setCustomerFormData] = useState({
+        name: "",
+        address: {
+            street: "",
+            zipCode: "",
+            city: "",
+        },
+        nip: "",
+    });
+
+    const handleInputChange = (event) => {
+        setCustomerFormData({
+            ...customerFormData,
+            [event.target.name]: event.target.value,
+        });
+    };
+    const handleAddressInputChange = (event) => {
+        setCustomerFormData({
+            ...customerFormData,
+            address: {
+                ...customerFormData.address,
+                [event.target.name]: event.target.value,
+            },
+        });
+    };
+
+    function createNewCustomer(event) {
+        console.log(event);
+        event.preventDefault();
+        customerApiService.create(customerFormData).then((newCustomer) => {
+            return navigate(`/customers/${newCustomer._id}`);
+        });
+    }
+
     return (
-        <Form className="w-50" method="POST" action="/add-customer">
+        <form className="w-50" onSubmit={createNewCustomer}>
             <div className="mb-3">
                 <label className="form-label" htmlFor="name">
                     Nazwa klienta
@@ -46,6 +50,7 @@ export const AddCustomerForm = () => {
                     type="text"
                     id="name"
                     className="form-control"
+                    onChange={handleInputChange}
                 />
             </div>
             <fieldset className="mb-3">
@@ -60,6 +65,7 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="street"
                         className="form-control"
+                        onChange={handleAddressInputChange}
                     />
                 </div>
                 <div className="mb-1">
@@ -72,6 +78,7 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="zipCode"
                         className="form-control"
+                        onChange={handleAddressInputChange}
                     />
                 </div>
                 <div className="mb-1">
@@ -84,6 +91,7 @@ export const AddCustomerForm = () => {
                         type="text"
                         id="city"
                         className="form-control"
+                        onChange={handleAddressInputChange}
                     />
                 </div>
             </fieldset>
@@ -97,11 +105,12 @@ export const AddCustomerForm = () => {
                     type="text"
                     id="nip"
                     className="form-control"
+                    onChange={handleInputChange}
                 />
             </div>
             <button type="submit" className="btn btn-primary">
                 Dodaj
             </button>
-        </Form>
+        </form>
     );
 };

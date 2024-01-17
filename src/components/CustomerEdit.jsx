@@ -12,7 +12,6 @@ export const CustomerEdit = () => {
         customerApiService.get(params.id).then((customer) => {
             setCustomer(customer);
         });
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
