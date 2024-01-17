@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import ActionCreateEditModal from "./ActionCreateEditModal";
 import { customerApiService } from "../apiService/customerApiService";
 import { actionApiService } from "../apiService/actionApiService";
+import Popup from "./Popup";
 
 export const CustomerDetail = () => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [customer, setCustomer] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -17,23 +18,30 @@ export const CustomerDetail = () => {
         date: new Date(),
     });
     const [actions, setAction] = useState(null);
+    const [showPopup, setShowPopup] = useState(false);
+    const [actionToDelete, setActionToDelete] = useState(null);
     const params = useParams();
 
     const customerId = customer?._id;
 
     useEffect(() => {
-        customerApiService.get(params.id).then((customer) => {
-            setCustomer(customer);
-        }).catch((err)=>{
-            navigate("/customers")
-        });
-        actionApiService.list(params.id).then((action) => {
-            setAction(action);
-        }).catch((err)=>{
-            if (err) {
-
-            }
-        });
+        customerApiService
+            .get(params.id)
+            .then((customer) => {
+                setCustomer(customer);
+            })
+            .catch((err) => {
+                navigate("/customers");
+            });
+        actionApiService
+            .list(params.id)
+            .then((action) => {
+                setAction(action);
+            })
+            .catch((err) => {
+                if (err) {
+                }
+            });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -80,6 +88,16 @@ export const CustomerDetail = () => {
             });
     };
 
+    const handleDeleteClick = (action) => {
+        setActionToDelete(action);
+        setShowPopup(true);
+    };
+
+    const handleConfirmDelete = () => {
+        handleDeleteAction(actionToDelete);
+        setShowPopup(false);
+    };
+
     return (
         <div>
             <div className="mb-5 card">
@@ -121,10 +139,18 @@ export const CustomerDetail = () => {
                                 <button
                                     type="button"
                                     className="btn btn-primary mx-1"
-                                    onClick={() => handleDeleteAction(action)}
+                                    onClick={() => handleDeleteClick(action)}
                                 >
                                     Usuń
                                 </button>
+                                {showPopup && (
+                                    <Popup
+                                        title="Potwierdź usunięcie"
+                                        message="Czy na pewno chcesz usunąć akcję?"
+                                        onConfirm={handleConfirmDelete}
+                                        onCancel={() => setShowPopup(false)}
+                                    />
+                                )}
                                 <button
                                     type="button"
                                     className="btn btn-primary mx-1"
