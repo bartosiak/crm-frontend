@@ -6,17 +6,59 @@ import { loginApiService } from "../apiService/loginApiService";
 export const Signup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [emailError, setEmailError] = useState("");
+    const [passwordError, setPasswordError] = useState("");
+    const [submitMessage, setSubmitMessage] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const validateEmail = (value) => {
+        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        setEmailError(isValid ? "" : "Wprowadź prawidłowy adres e-mail");
+        return isValid;
+    };
+
+    const validatePassword = (value) => {
+        const isValid = value.length >= 4;
+        setPasswordError(isValid ? "" : "Hasło musi mieć co najmniej 4 znaki");
+        return isValid;
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Sending fetch request with data:", { email, password });
-        loginApiService
-            .create({ email: email, password: password })
-            .then((result) => {
-                console.log(result);
-                navigate("/login");
-            });
+
+        const isEmailValid = validateEmail(email);
+        const isPasswordValid = validatePassword(password);
+
+        if (isEmailValid && isPasswordValid) {
+            try {
+                const result = await loginApiService.create({
+                    email: email,
+                    password: password,
+                });
+
+                if (result.message === "User created successfully") {
+                    setSubmitMessage("Rejestracja przebiegła pomyślnie");
+                    setTimeout(() => {
+                        navigate("/login");
+                    }, 2000);
+                } else {
+                    setSubmitMessage("Wystąpił błąd podczas rejestracji");
+                }
+            } catch (error) {
+                if (error.response && error.response.status === 409) {
+                    setSubmitMessage(
+                        "Użytkownik o podanym adresie e-mail już istnieje"
+                    );
+                } else {
+                    console.error(error);
+                    setSubmitMessage("Wystąpił błąd podczas rejestracji");
+                }
+            }
+        } else {
+            setSubmitMessage(
+                "Dane formularza są niepoprawne, zarejestruj się jeszcze raz"
+            );
+        }
     };
 
     return (
@@ -24,6 +66,10 @@ export const Signup = () => {
             <NavBar />
             <form onSubmit={handleSubmit} className="w-50 mx-auto">
                 <div className="mb-3">
+                    <h3>Rejestracja w CRM</h3>
+                    <p className="fs-5">
+                        Aby założyć konto, wypełnij formularz
+                    </p>
                     <label htmlFor="email" className="form-label">
                         Login
                     </label>
@@ -32,12 +78,20 @@ export const Signup = () => {
                         id="email"
                         name="email"
                         placeholder="email"
-                        className="form-control"
+                        className={`form-control ${
+                            emailError ? "is-invalid" : ""
+                        }`}
                         autoComplete="off"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            validateEmail(e.target.value);
+                        }}
                         required
                     />
+                    {emailError && (
+                        <div className="invalid-feedback">{emailError}</div>
+                    )}
                 </div>
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">
@@ -48,15 +102,28 @@ export const Signup = () => {
                         id="password"
                         name="password"
                         placeholder="Hasło"
-                        className="form-control"
+                        className={`form-control ${
+                            passwordError ? "is-invalid" : ""
+                        }`}
                         autoComplete="off"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            validatePassword(e.target.value);
+                        }}
                     />
+                    {passwordError && (
+                        <div className="invalid-feedback">{passwordError}</div>
+                    )}
                 </div>
                 <button type="submit" className="btn btn-primary">
                     Zarejestruj
                 </button>
+                {submitMessage !== "" ? (
+                    <h5 className="mt-3">{submitMessage}</h5>
+                ) : (
+                    ""
+                )}
             </form>
         </div>
     );

@@ -34,6 +34,7 @@ export const loginApiService = {
                     "Content-type": "application/json",
                 },
             });
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -41,7 +42,16 @@ export const loginApiService = {
             const signup = await response.json();
             return signup;
         } catch (error) {
-            return error;
+            if (error.response && error.response.status === 409) {
+                console.log("błąd");
+                throw new Error(
+                    error.response.data.error ||
+                        "Użytkownik o podanym adresie e-mail już istnieje"
+                );
+            } else {
+                console.error(error);
+                throw new Error("Wystąpił błąd podczas rejestracji");
+            }
         }
     },
 };

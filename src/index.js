@@ -10,11 +10,15 @@ import { AddCustomerForm } from "./components/AddCustomerForm";
 import { CustomerEdit } from "./components/CustomerEdit";
 import { LoginForm } from "./components/LoginForm";
 import { Signup } from "./components/Signup";
-// import { PrivateRoute } from "./components/PrivateRoute";
+import { PrivateRoute } from "./components/PrivateRoute";
 
 const router = createBrowserRouter([
     {
-        element: <App />,
+        element: (
+            <PrivateRoute>
+                <App />
+            </PrivateRoute>
+        ),
         path: "/",
         children: [
             {

@@ -16,7 +16,7 @@ export const LoginForm = () => {
             .login({ email: email, password: password })
             .then((result) => {
                 console.log(result);
-                Cookies.set("token", result.jwt);
+                Cookies.set("token", result.jwt, { expires: 1/24 });
                 navigate("/customers");
             });
     };

@@ -17,14 +17,16 @@ export const NavBar = () => {
                             Dodaj klienta
                         </Link>
                     ) : (
-                        ""
+                        <Link className="nav-link" to={"/signup"}>
+                            Signup
+                        </Link>
                     )}
 
                     {isAuth ? (
                         <Link
                             className="nav-link"
                             onClick={() => {
-                                localStorage.removeItem("token");
+                                Cookies.remove("token");
                             }}
                             to={"/login"}
                         >
