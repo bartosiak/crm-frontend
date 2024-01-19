@@ -30,30 +30,26 @@ export const Signup = () => {
         const isPasswordValid = validatePassword(password);
 
         if (isEmailValid && isPasswordValid) {
-            try {
-                const result = await loginApiService.create({
+            loginApiService
+                .create({
                     email: email,
                     password: password,
+                })
+                .then((result) => {
+                    console.log(result);
+                    if (result.error) {
+                        setSubmitMessage(result.message);
+                    } else {
+                        setSubmitMessage("Rejestracja przebiegła pomyślnie");
+                        setTimeout(() => {
+                            navigate("/login");
+                        }, 2000);
+                    }
+                })
+                .catch((error) => {
+                    console.log(error);
+                    setSubmitMessage("Błąd serwera");
                 });
-
-                if (result.message === "User created successfully") {
-                    setSubmitMessage("Rejestracja przebiegła pomyślnie");
-                    setTimeout(() => {
-                        navigate("/login");
-                    }, 2000);
-                } else {
-                    setSubmitMessage("Wystąpił błąd podczas rejestracji");
-                }
-            } catch (error) {
-                if (error.response && error.response.status === 409) {
-                    setSubmitMessage(
-                        "Użytkownik o podanym adresie e-mail już istnieje"
-                    );
-                } else {
-                    console.error(error);
-                    setSubmitMessage("Wystąpił błąd podczas rejestracji");
-                }
-            }
         } else {
             setSubmitMessage(
                 "Dane formularza są niepoprawne, zarejestruj się jeszcze raz"

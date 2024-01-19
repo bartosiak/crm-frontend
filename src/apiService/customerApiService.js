@@ -1,10 +1,9 @@
 import Cookies from "js-cookie";
 
-const token = Cookies.get("token");
-
 export const customerApiService = {
     list: async () => {
         try {
+            const token = Cookies.get("token");
             const response = await fetch("http://localhost:4000/customers", {
                 headers: {
                     Authorization: token,
@@ -19,6 +18,7 @@ export const customerApiService = {
 
     get: async (id) => {
         try {
+            const token = Cookies.get("token");
             const response = await fetch(
                 `http://localhost:4000/customers/${id}`,
                 {
@@ -35,6 +35,7 @@ export const customerApiService = {
     },
     create: async (customerData) => {
         try {
+            const token = Cookies.get("token");
             const response = await fetch(`http://localhost:4000/customers`, {
                 method: "POST",
                 headers: {
@@ -55,6 +56,7 @@ export const customerApiService = {
 
     delete: async (id) => {
         try {
+            const token = Cookies.get("token");
             const response = await fetch(
                 `http://localhost:4000/customers/${id}`,
                 {
@@ -72,6 +74,7 @@ export const customerApiService = {
     },
     update: async (id, data) => {
         try {
+            const token = Cookies.get("token");
             const response = await fetch(
                 `http://localhost:4000/customers/${id}`,
                 {

@@ -34,24 +34,28 @@ export const loginApiService = {
                     "Content-type": "application/json",
                 },
             });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            if (response.status === 500) {
+                throw new Error("Błąd 500");
             }
+            // if (!response.ok) {
+            //     let error;
+            //     if (response.status === 409) {
+            //         error = new Error(
+            //             "User already exists with the provided email address"
+            //         );
+            //     } else {
+            //         error = new Error(`HTTP error! status: ${response.status}`);
+            //     }
+            //     error.status = response.status;
+            //     throw error;
+            // }
 
             const signup = await response.json();
             return signup;
         } catch (error) {
-            if (error.response && error.response.status === 409) {
-                console.log("błąd");
-                throw new Error(
-                    error.response.data.error ||
-                        "Użytkownik o podanym adresie e-mail już istnieje"
-                );
-            } else {
-                console.error(error);
-                throw new Error("Wystąpił błąd podczas rejestracji");
-            }
+            // throw new Error(`HTTP error! status: ${error.status}`);
+            console.log(error);
+            throw error;
         }
     },
 };
