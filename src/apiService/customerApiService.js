@@ -1,10 +1,11 @@
 import Cookies from "js-cookie";
+import { BACKEND_URL } from "../constants/api";
 
 export const customerApiService = {
     list: async () => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch("http://localhost:4000/customers", {
+            const response = await fetch(`${BACKEND_URL}/customers`, {
                 headers: {
                     Authorization: token,
                 },
@@ -19,14 +20,11 @@ export const customerApiService = {
     get: async (id) => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch(
-                `http://localhost:4000/customers/${id}`,
-                {
-                    headers: {
-                        Authorization: token,
-                    },
-                }
-            );
+            const response = await fetch(`${BACKEND_URL}/customers/${id}`, {
+                headers: {
+                    Authorization: token,
+                },
+            });
             const customer = await response.json();
             return customer;
         } catch (error) {
@@ -36,7 +34,7 @@ export const customerApiService = {
     create: async (customerData) => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch(`http://localhost:4000/customers`, {
+            const response = await fetch(`${BACKEND_URL}/customers`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -57,15 +55,12 @@ export const customerApiService = {
     delete: async (id) => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch(
-                `http://localhost:4000/customers/${id}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: token,
-                    },
-                }
-            );
+            const response = await fetch(`${BACKEND_URL}/customers/${id}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: token,
+                },
+            });
             const customer = await response.json();
             return customer;
         } catch (error) {
@@ -75,17 +70,14 @@ export const customerApiService = {
     update: async (id, data) => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch(
-                `http://localhost:4000/customers/${id}`,
-                {
-                    method: "PUT",
-                    headers: {
-                        Authorization: token,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data),
-                }
-            );
+            const response = await fetch(`${BACKEND_URL}/customers/${id}`, {
+                method: "PUT",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            });
 
             const customer = await response.json();
             return customer;

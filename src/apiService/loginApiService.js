@@ -1,7 +1,9 @@
+import { BACKEND_URL } from "../constants/api";
+
 export const loginApiService = {
     login: async (loginData) => {
         try {
-            const response = await fetch("http://localhost:4000/login", {
+            const response = await fetch(`${BACKEND_URL}/login`, {
                 method: "POST",
                 body: JSON.stringify({
                     email: loginData.email,
@@ -24,7 +26,7 @@ export const loginApiService = {
     },
     create: async (userData) => {
         try {
-            const response = await fetch("http://localhost:4000/signup", {
+            const response = await fetch(`${BACKEND_URL}/signup`, {
                 method: "POST",
                 body: JSON.stringify({
                     email: userData.email,
@@ -37,25 +39,23 @@ export const loginApiService = {
             if (response.status === 500) {
                 throw new Error("Błąd 500");
             }
-            // if (!response.ok) {
-            //     let error;
-            //     if (response.status === 409) {
-            //         error = new Error(
-            //             "User already exists with the provided email address"
-            //         );
-            //     } else {
-            //         error = new Error(`HTTP error! status: ${response.status}`);
-            //     }
-            //     error.status = response.status;
-            //     throw error;
-            // }
+            if (!response.ok) {
+                let error;
+                if (response.status === 409) {
+                    error = new Error(
+                        "User already exists with the provided email address"
+                    );
+                } else {
+                    error = new Error(`HTTP error! status: ${response.status}`);
+                }
+                error.status = response.status;
+                throw error;
+            }
 
             const signup = await response.json();
             return signup;
         } catch (error) {
-            // throw new Error(`HTTP error! status: ${error.status}`);
-            console.log(error);
-            throw error;
+            throw new Error(`HTTP error! status: ${error.status}`);
         }
     },
 };

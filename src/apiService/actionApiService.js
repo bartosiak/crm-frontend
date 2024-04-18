@@ -1,11 +1,12 @@
 import Cookies from "js-cookie";
+import { BACKEND_URL } from "../constants/api";
 
 export const actionApiService = {
     list: async (customerId) => {
         try {
             const token = Cookies.get("token");
             const response = await fetch(
-                `http://localhost:4000/actions?customer=${customerId}`,
+                `${BACKEND_URL}/actions?customer=${customerId}`,
                 {
                     headers: {
                         Authorization: token,
@@ -26,7 +27,7 @@ export const actionApiService = {
     create: async (updatedAction) => {
         try {
             const token = Cookies.get("token");
-            const response = fetch("http://localhost:4000/actions", {
+            const response = fetch(`${BACKEND_URL}/actions`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -46,15 +47,12 @@ export const actionApiService = {
     delete: async (actionId) => {
         try {
             const token = Cookies.get("token");
-            const response = await fetch(
-                `http://localhost:4000/actions/${actionId}`,
-                {
-                    method: "DELETE",
-                    headers: {
-                        Authorization: token,
-                    },
-                }
-            );
+            const response = await fetch(`${BACKEND_URL}/actions/${actionId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: token,
+                },
+            });
 
             const action = await response.json();
             return action;
@@ -67,7 +65,7 @@ export const actionApiService = {
         try {
             const token = Cookies.get("token");
             const response = await fetch(
-                `http://localhost:4000/actions/${updatedAction._id}`,
+                `${BACKEND_URL}/actions/${updatedAction._id}`,
                 {
                     method: "PUT",
                     headers: {
